@@ -1,0 +1,40 @@
+get_next_line/get_next_line.c: In function ‘ft_cat’:
+get_next_line/get_next_line.c:55:13: error: expected ‘;’ before ‘}’ token
+   55 |   free(line)
+      |             ^
+      |             ;
+   56 |  }
+      |  ~           
+get_next_line/get_next_line.c:77:10: error: expected expression before ‘)’ token
+   77 |  return ();
+      |          ^
+get_next_line/get_next_line.c: In function ‘get_next_line’:
+get_next_line/get_next_line.c:91:9: error: assignment to ‘char’ from ‘void *’ makes integer from pointer without a cast [-Werror=int-conversion]
+   91 |  raw[0] = NULL;
+      |         ^
+get_next_line/get_next_line.c:97:9: error: too few arguments to function ‘ft_strchr’
+   97 |  while (ft_strchr() == -1 || (readv = read(fd, &buffer, BUFFER_SIZE) > 0))
+      |         ^~~~~~~~~
+get_next_line/get_next_line.c:13:5: note: declared here
+   13 | int ft_strchr(const char *str, const char c)
+      |     ^~~~~~~~~
+get_next_line/get_next_line.c:101:6: error: suggest parentheses around assignment used as truth value [-Werror=parentheses]
+  101 |  if (pos = -1) // raw est la dernière ligne, on peut la return directement
+      |      ^~~
+get_next_line/get_next_line.c:104:15: error: expected ‘;’ before ‘}’ token
+  104 |   return (raw)
+      |               ^
+      |               ;
+  105 |  }
+      |  ~             
+get_next_line/get_next_line.c: In function ‘ft_cat’:
+get_next_line/get_next_line.c:78:1: error: control reaches end of non-void function [-Werror=return-type]
+   78 | }
+      | ^
+cc1: all warnings being treated as errors
+
+(null)\n
+\n
+-------
+\n
+-------
