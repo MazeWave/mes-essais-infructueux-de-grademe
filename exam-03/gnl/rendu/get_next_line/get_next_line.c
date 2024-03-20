@@ -11,7 +11,7 @@ int	ft_strchr(char *rest)
 {
 	int	i = 0;
 
-	while (rest && rest[i])
+	while (rest[i] != '\0')
 	{
 		if (rest[i] == '\n')
 			return (1);
@@ -23,7 +23,7 @@ int	ft_strchr(char *rest)
 char	*ft_strjoin(char *buffer, char *rest)
 {
 	char	*all;
-	int	i = 0;
+	int	i = -1;
 	int	y = 0;
 
 	if (!buffer)
@@ -31,12 +31,9 @@ char	*ft_strjoin(char *buffer, char *rest)
 	all = malloc(sizeof(char) * (ft_strlen(buffer) + ft_strlen(rest)) + 1);
 	if (!all)
 		return (NULL);
-	while (rest && rest[i])
-	{
+	while (rest[++i] != '\0')
 		all[i] = rest[i];
-		i++;
-	}
-	while (buffer[y])
+	while (buffer[y] != '\0')
 		all[i++] = buffer[y++];
 	all[i] = '\0';
 	free(rest);
@@ -45,29 +42,29 @@ char	*ft_strjoin(char *buffer, char *rest)
 
 char	*ft_strdup(char *str)
 {
-	char	*sstr;
+	char	*new;
 	int	i = 0;
 
-	sstr = malloc(sizeof(char) * ft_strlen(str) + 1);
-	if (!sstr)
+	new = malloc(sizeof(char) * ft_strlen(str) + 1);
+	if (!new)
 		return (NULL);
-	while (str[i])
+	while (str[i] != '\0')
 	{
-		sstr[i] = str[i];
+		new[i] = str[i];
 		i++;
 	}
-	sstr[i] = '\0';
-	return (sstr);
+	new[i] = '\0';
+	return (new);
 }
 
 char	*read_file(int fd, char *rest)
 {
-	char	*buffer;
+	char	buffer[BUFFER_SIZE + 1];
 	ssize_t	rread;
 
-	buffer = malloc(BUFFER_SIZE + 1);
-	if (!buffer)
-		return (NULL);
+	//buffer = malloc(BUFFER_SIZE + 1);
+	//if (!buffer)
+	//	return (NULL);
 	if (!rest)
 		rest = ft_strdup("");
 	rread = 1;
@@ -79,7 +76,8 @@ char	*read_file(int fd, char *rest)
 		buffer[rread] = '\0';
 		rest = ft_strjoin(buffer, rest);
 	}
-	return (free(buffer), rest);
+	//free (buffer);
+	return (rest);
 }
 
 char	*ft_getline(char *rest)
@@ -91,11 +89,11 @@ char	*ft_getline(char *rest)
 		i++;
 	if (rest[i] == '\n')
 		i++;
-	str = malloc(i + 2);
+	str = malloc(sizeof(char) * i + 2);
 	if (!str)
 		return (NULL);
 	i = 0;
-	while (rest[i] && rest[i] != '\n')
+	while (rest[i] != '\0' && rest[i] != '\n')
 	{
 		str[i] = rest[i];
 		i++;
