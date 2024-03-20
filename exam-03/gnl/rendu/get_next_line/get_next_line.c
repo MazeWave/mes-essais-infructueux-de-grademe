@@ -1,145 +1,151 @@
-#include <unistd.h>
-#include <stdlib.h>
-
-int	ft_strlen(const char *str)
+int 	ft_strlen(char *str)
 {
-	int i = 0;
+	int	i = 0;
 
-	while (*str)
+	while (str[i])
 		i++;
 	return (i);
 }
 
-int	ft_strchr(const char *str, const char c)
+int	ft_strchr(char *rest)
 {
-	int i = 0;
-
-	while (str[i] != '\0')
-	{
-		if (str[i] == c)
-			return (i);	// trouve la position de 'c' genre '\n'
-		i++;
-	}
-	if (c == '\0')
-		return (i);		// trouve la position de '\0'
-	else
-		return (-1);		// 'c' n'a pas été trouvé
-	return (-1);
-}
-
-char	*ft_strdup(const char *str)
-{
-	char	*dup;
 	int	i = 0;
 
-	dup = malloc(sizeof(char) * ft_strlen(str) + 1);
-	if (!dup)
+	while (rest && rest[i])
+	{
+		if (rest[i] == '\n')
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
+char	*ft_strjoin(char *buffer, char *rest)
+{
+	char	*all;
+	int	i = 0;
+	int	y = 0;
+
+	if (!buffer)
 		return (NULL);
-	while (str[i] != '\0')
+	all = malloc(sizeof(char) * (ft_strlen(buffer) + ft_strlen(rest)) + 1);
+	if (!all)
+		return (NULL);
+	while (rest && rest[i])
 	{
-		dup[i] = str[i];
+		all[i] = rest[i];
 		i++;
 	}
-	return (dup);
+	while (buffer[y])
+		all[i++] = buffer[y++];
+	all[i] = '\0';
+	free(rest);
+	return (all);
 }
 
-char	*ft_cat(char *line, const char *buffer)
+char	*ft_strdup(char *str)
 {
-	char	*temp;
+	char	*sstr;
 	int	i = 0;
+
+	sstr = malloc(sizeof(char) * ft_strlen(str) + 1);
+	if (!sstr)
+		return (NULL);
+	while (str[i])
+	{
+		sstr[i] = str[i];
+		i++;
+	}
+	sstr[i] = '\0';
+	return (sstr);
+}
+
+char	*read_file(int fd, char *rest)
+{
+	char	*buffer;
+	ssize_t	rread;
+
+	buffer = malloc(BUFFER_SIZE + 1);
+	if (!buffer)
+		return (NULL);
+	if (!rest)
+		rest = ft_strdup("");
+	rread = 1;
+	while (!ft_strchr(rest) && rread != 0)
+	{
+		rread = read(fd, buffer, BUFFER_SIZE);
+		if (rread == -1)
+			return (free(buffer), free(rest), NULL);
+		buffer[rread] = '\0';
+		rest = ft_strjoin(buffer, rest);
+	}
+	return (free(buffer), rest);
+}
+
+char	*ft_getline(char *rest)
+{
+	char	*str;
+	int	i = 0;
+
+	while (rest[i] != '\n' && rest[i])
+		i++;
+	if (rest[i] == '\n')
+		i++;
+	str = malloc(i + 2);
+	if (!str)
+		return (NULL);
+	i = 0;
+	while (rest[i] && rest[i] != '\n')
+	{
+		str[i] = rest[i];
+		i++;
+	}
+	if (rest[i] == '\n')
+		str[i++] = '\n';
+	str[i] = '\0';
+	return (str);
+}
+
+char	*ft_getrest(char *rest, char *line)
+{
+	char	*rrest;
+	int	i = ft_strlen(line);
 	int	j = 0;
 
-	if (line != NULL)	// si line n'est pas vide
-	{
-		temp = ft_strdup(line);
-		free(line)
-	}
-	else			// cas si premiere fois
-	{
-		line = ft_strdup(buffer);
-		return (line);
-	}
-	line = malloc(sizeof(char) * (ft_strlen(temp) + ft_strlen(buffer) + 1));
-	if (!line)
-		return (NULL);
-	while (temp[i] != '\0')	// copy temp dans line
-	{
-		line[i] = temp[i];
-		i++;
-	}
-	while (buffer[j] != '\0')	// copy buffer apres temp dans line
-	{
-		line[i+j] = buffer[j];
+	while (rest[i++])
 		j++;
-	}
-	line[i+j] = '\0';	// null terminate
-	free(temp);
-	return ();
+	rrest = malloc(sizeof(char) * (j + 1));
+	if (!rrest)
+		return (NULL);
+	i = ft_strlen(line);
+	j = 0;
+	while (rest[i])
+		rrest[j++] = rest[i++];
+	rrest[j] = '\0';
+	free(rest);
+	return (rrest);
 }
 
 char	*get_next_line(int fd)
 {
-	static char	*stash = NULL;
-	char		buffer[BUFFER_SIZE + 1];
-	char		*raw;
-	char		*result;
-	int		readv;
-	int		pos;
-	int		i = 0;
+	char		*line;
+	static char	*rest;
 
-	raw = malloc(sizeof(char) * 1);
-	raw[0] = NULL;
-	if (stash != NULL)
-	{
-		raw = ft_strdup(stash);
-		free(stash);
-	}
-	while (ft_strchr() == -1 || (readv = read(fd, &buffer, BUFFER_SIZE) > 0))
-		raw = ft_cat(raw, buffer);
-	// todo copier jusqua \n ou \0 dans result
-	pos = ft_strchr(raw, '\n');
-	if (pos = -1)	// raw est la dernière ligne, on peut la return directement
-	{
-		free (stash);
-		return (raw)
-	}
-	else		// copie raw dans result jusqu'à \n
-	{
-		result = malloc(sizeof(char) * pos + 2);
-		if (!result)
-		{
-			free (stash);
-			free (raw);
-			return (NULL);
-		}
-		while (i <= pos)	// copie raw jusqua \n
-		{
-			result[i] = raw[i];
-			i++;
-		}
-
-	}
-	if (readv < 0)
-	{
-		free (result);
-		free (raw);
-		free (stash);
+	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	}
-	// todo copier le reste dans stash et free raw
-	if (stash != NULL)
-		free (stash);
-	stash = malloc (sizeof(char) * (pos - ft_strlen(raw)) + 1);
-	if (!stash)
+	rest = read_file(fd, rest);
+	if (!rest)
 		return (NULL);
-	i = 0;
-	pos++;	// pour copier après le \n
-	while (raw[pos + i] != '\0')
+	line = ft_getline(rest);
+	if (line[0] == '\0')
 	{
-		stash[i] = raw[pos+i];
-		i++;
+		free(rest);
+		rest = NULL;
+		return (free(line), NULL);
 	}
-	return (NULL);
+	rest = ft_getrest(rest, line);
+	if (!rest)
+		return (free(line), NULL);
+	return (line);
 }
-
 
