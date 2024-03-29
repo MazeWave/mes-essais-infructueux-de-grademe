@@ -1,6 +1,10 @@
-#include "get_next_line.h"
+#include <unistd.h>
+#include <stdlib.h>
 
-int 	ft_strlen(const char *str)
+#include <fcntl.h>
+#include <stdio.h>
+
+int 	ft_strlen(char *str)
 {
 	int	i = 0;
 
@@ -8,11 +12,12 @@ int 	ft_strlen(const char *str)
 		i++;
 	return (i);
 }
-
-int	ft_strchr(const char *str)
+int	ft_strchr(char *str)
 {
 	int	i = 0;
 
+	if (!str)
+		return (0);
 	while (str[i] != '\0')
 	{
 		if (str[i] == '\n')
@@ -21,50 +26,46 @@ int	ft_strchr(const char *str)
 	}
 	return (0);
 }
-
 char	*ft_strjoin(char *buffer, char *rest)
 {
-	char	*result;
+	char	*all;
 	int		i = -1;
 	int		j = 0;
 
-	if (!buffer)
+	if (!buffer || !rest)
 		return (NULL);
-	result = malloc(sizeof(char) * (ft_strlen(buffer) + ft_strlen(rest)) + 1);
-	if (!result)
+	all = malloc(sizeof(char) * (ft_strlen(buffer) + ft_strlen(rest)) + 1);
+	if (!all)
 		return (NULL);
 	while (rest[++i] != '\0')
-		result[i] = rest[i];
+		all[i] = rest[i];
 	while (buffer[j] != '\0')
-		result[i++] = buffer[j++];
-	result[i] = '\0';
+		all[i++] = buffer[j++];
+	all[i] = '\0';
 	free(rest);
-	return (result);
+	return (all);
 }
-
 char	*ft_strdup(char *str)
 {
 	char	*new;
-	int		i = 0;
+	int		i = -1;
 
 	new = malloc(sizeof(char) * ft_strlen(str) + 1);
 	if (!new)
 		return (NULL);
-	while (str[i] != '\0')
-	{
+	while (str[++i] != '\0')
 		new[i] = str[i];
-		i++;
-	}
 	new[i] = '\0';
 	return (new);
 }
 
+
 char	*read_file(int fd, char *rest)
 {
-	char	*buffer;
-	ssize_t	rread;
+	char		*buffer;
+	ssize_t		rread;
 
-	buffer = malloc(sizeof(char) * BUFFER_SIZE + 1);
+	buffer = malloc(BUFFER_SIZE + 1);
 	if (!buffer)
 		return (NULL);
 	if (!rest)
@@ -78,24 +79,23 @@ char	*read_file(int fd, char *rest)
 		buffer[rread] = '\0';
 		rest = ft_strjoin(buffer, rest);
 	}
-	free (buffer);
-	return (rest);
+	return (free(buffer), rest);
 }
 
-char	*ft_getline(const char *rest)
+char	*ft_getline(char *rest)
 {
 	char	*str;
 	int		i = 0;
 
-	while (rest[i] != '\n' && rest[i])	//soit j'ai la pos de '\n' soit j'ai strlen de rest
+	while (rest[i] != '\n' && rest[i])
 		i++;
-	if (rest[i] == '\n')	// si '\n' est trouvé je met ++ pour le copier aussi
+	if (rest[i] == '\n')
 		i++;
-	str = malloc(sizeof(char) * i + 2);	// +2 pour '\n' et '\0'
+	str = malloc(sizeof(char) * i + 2);
 	if (!str)
 		return (NULL);
 	i = 0;
-	while (rest[i] != '\0' && rest[i] != '\n')
+	while (rest[i] && rest[i] != '\n')
 	{
 		str[i] = rest[i];
 		i++;
@@ -109,17 +109,17 @@ char	*ft_getline(const char *rest)
 char	*ft_getrest(char *rest, char *line)
 {
 	char	*rrest;
-	int	i = ft_strlen(line);
-	int	j = 0;
+	int		i = ft_strlen(line);
+	int		j = 0;
 
-	while (rest[i++])
+	while (rest[i++] != '\0')
 		j++;
 	rrest = malloc(sizeof(char) * (j + 1));
 	if (!rrest)
 		return (NULL);
 	i = ft_strlen(line);
 	j = 0;
-	while (rest[i])
+	while (rest[i] != '\0')
 		rrest[j++] = rest[i++];
 	rrest[j] = '\0';
 	free(rest);
@@ -141,14 +141,20 @@ char	*get_next_line(int fd)
 	{
 		free(rest);
 		rest = NULL;
-		free(line);
-		return (NULL);
+		return (free(line), NULL);
 	}
 	rest = ft_getrest(rest, line);
 	if (!rest)
-	{
-		free(line);
-		return (NULL);
-	}
+		return (free(line), NULL);
 	return (line);
+}
+
+int	main(void)
+{
+	int	fd;
+	fd = open("../test", O_RDONLY);
+
+	for (unsigned short i = 0; i < 5; i++)
+		printf("%d\t: %s", i, get_next_line(fd));
+	return (0);
 }
