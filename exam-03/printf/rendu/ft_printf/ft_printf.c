@@ -16,7 +16,7 @@ int	ft_putstr(const char *str)
 	return (len);
 }
 
-int	ft_putnbrbase(long long int nb, short int base, int len)
+int	ft_putnbrbase(long long int nb, short int base)
 {
 	char	hexa[16] = "0123456789abcdef";
 
@@ -25,12 +25,12 @@ int	ft_putnbrbase(long long int nb, short int base, int len)
 	if (nb < 0 && base == 10)
 	{
 		len += write(1, "-", 1);
-		len += ft_putnbrbase(-nb, base, 0);
+		len += ft_putnbrbase(-nb, base);
 	}
 	else
 	{
 		if (nb > base)
-			len += ft_putnbrbase(nb/base, base, 0);
+			len += ft_putnbrbase(nb/base, base);
 		len += write(1, &hexa[nb%base], 1);
 	}
 	return (len);
@@ -51,9 +51,9 @@ int	ft_printf(const char *str, ...)
 			if (str[i] == 's')
 				len += ft_putstr(va_arg(ptr, char *));
 			else if (str[i] == 'd')
-				len += ft_putnbrbase(va_arg(ptr, int), 10, 0);
+				len += ft_putnbrbase(va_arg(ptr, int), 10);
 			else if (str[i] == 'x')
-				len += ft_putnbrbase(va_arg(ptr, int), 16, 0);
+				len += ft_putnbrbase(va_arg(ptr, int), 16);
 		}
 		else
 			len += write(1, &str[i], 1);
