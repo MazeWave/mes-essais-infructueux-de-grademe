@@ -82,7 +82,7 @@ char	*read_file(int fd, char *rest)
 	return (free(buffer), rest);
 }
 
-char	*ft_getline(char *rest)
+char	*getline(char *rest)
 {
 	char	*str;
 	int		i = 0;
@@ -106,7 +106,7 @@ char	*ft_getline(char *rest)
 	return (str);
 }
 
-char	*ft_getrest(char *rest, char *line)
+char	*getrest(char *rest, char *line)
 {
 	char	*rrest;
 	int		i = ft_strlen(line);
@@ -136,14 +136,14 @@ char	*get_next_line(int fd)
 	rest = read_file(fd, rest);
 	if (!rest)
 		return (NULL);
-	line = ft_getline(rest);
+	line = getline(rest);
 	if (line[0] == '\0')
 	{
 		free(rest);
 		rest = NULL;
 		return (free(line), NULL);
 	}
-	rest = ft_getrest(rest, line);
+	rest = getrest(rest, line);
 	if (!rest)
 		return (free(line), NULL);
 	return (line);
