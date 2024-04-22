@@ -74,7 +74,7 @@ int main(int argc, char **argv, char **env)
     if (argc == 1)
         return (1);
     argv[argc] = 0;
-    while (argv[i - 1] && argv[i])
+    while (argv[i] && argv[i - 1])
     {
         argv = argv + i;
         i = 0;
