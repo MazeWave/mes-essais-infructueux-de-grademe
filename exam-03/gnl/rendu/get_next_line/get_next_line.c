@@ -1,3 +1,9 @@
+#include <unistd.h>
+#include <stdlib.h>
+
+#include <fcntl.h>
+#include <stdio.h>
+
 int 	ft_strlen(char *str)
 {
 	int	i = 0;
@@ -6,69 +12,66 @@ int 	ft_strlen(char *str)
 		i++;
 	return (i);
 }
-
-int	ft_strchr(char *rest)
+int	ft_strchr(char *str)
 {
 	int	i = 0;
 
-	while (rest[i] != '\0')
+	if (!str)
+		return (0);
+	while (str[i] != '\0')
 	{
-		if (rest[i] == '\n')
+		if (str[i] == '\n')
 			return (1);
 		i++;
 	}
 	return (0);
 }
-
 char	*ft_strjoin(char *buffer, char *rest)
 {
 	char	*all;
-	int	i = -1;
-	int	y = 0;
+	int		i = -1;
+	int		j = 0;
 
-	if (!buffer)
+	if (!buffer || !rest)
 		return (NULL);
 	all = malloc(sizeof(char) * (ft_strlen(buffer) + ft_strlen(rest)) + 1);
 	if (!all)
 		return (NULL);
 	while (rest[++i] != '\0')
 		all[i] = rest[i];
-	while (buffer[y] != '\0')
-		all[i++] = buffer[y++];
+	while (buffer[j] != '\0')
+		all[i++] = buffer[j++];
 	all[i] = '\0';
 	free(rest);
 	return (all);
 }
-
 char	*ft_strdup(char *str)
 {
 	char	*new;
-	int	i = 0;
+	int		i = -1;
 
 	new = malloc(sizeof(char) * ft_strlen(str) + 1);
 	if (!new)
 		return (NULL);
-	while (str[i] != '\0')
-	{
+	while (str[++i] != '\0')
 		new[i] = str[i];
-		i++;
-	}
 	new[i] = '\0';
 	return (new);
 }
 
+
 char	*read_file(int fd, char *rest)
 {
-	char	buffer[BUFFER_SIZE + 1];
-	ssize_t	rread;
+	char		*buffer;
+	ssize_t		rread;
 
-	//buffer = malloc(BUFFER_SIZE + 1);
-	//if (!buffer)
-	//	return (NULL);
+	buffer = malloc(BUFFER_SIZE + 1);
+	if (!buffer)
+		return (NULL);
 	if (!rest)
 		rest = ft_strdup("");
 	rread = 1;
-	while (!ft_strchr(rest) && rread != 0)
+	while (ft_strchr(rest) == 0 && rread != 0)
 	{
 		rread = read(fd, buffer, BUFFER_SIZE);
 		if (rread == -1)
@@ -76,14 +79,13 @@ char	*read_file(int fd, char *rest)
 		buffer[rread] = '\0';
 		rest = ft_strjoin(buffer, rest);
 	}
-	//free (buffer);
-	return (rest);
+	return (free(buffer), rest);
 }
 
-char	*ft_getline(char *rest)
+char	*getline(char *rest)
 {
 	char	*str;
-	int	i = 0;
+	int		i = 0;
 
 	while (rest[i] != '\n' && rest[i])
 		i++;
@@ -93,7 +95,7 @@ char	*ft_getline(char *rest)
 	if (!str)
 		return (NULL);
 	i = 0;
-	while (rest[i] != '\0' && rest[i] != '\n')
+	while (rest[i] && rest[i] != '\n')
 	{
 		str[i] = rest[i];
 		i++;
@@ -104,20 +106,20 @@ char	*ft_getline(char *rest)
 	return (str);
 }
 
-char	*ft_getrest(char *rest, char *line)
+char	*getrest(char *rest, char *line)
 {
 	char	*rrest;
-	int	i = ft_strlen(line);
-	int	j = 0;
+	int		i = ft_strlen(line);
+	int		j = 0;
 
-	while (rest[i++])
+	while (rest[i++] != '\0')
 		j++;
 	rrest = malloc(sizeof(char) * (j + 1));
 	if (!rrest)
 		return (NULL);
 	i = ft_strlen(line);
 	j = 0;
-	while (rest[i])
+	while (rest[i] != '\0')
 		rrest[j++] = rest[i++];
 	rrest[j] = '\0';
 	free(rest);
@@ -134,16 +136,25 @@ char	*get_next_line(int fd)
 	rest = read_file(fd, rest);
 	if (!rest)
 		return (NULL);
-	line = ft_getline(rest);
+	line = getline(rest);
 	if (line[0] == '\0')
 	{
 		free(rest);
 		rest = NULL;
 		return (free(line), NULL);
 	}
-	rest = ft_getrest(rest, line);
+	rest = getrest(rest, line);
 	if (!rest)
 		return (free(line), NULL);
 	return (line);
 }
 
+int	main(void)
+{
+	int	fd;
+	fd = open("../test", O_RDONLY);
+
+	for (unsigned short i = 0; i < 5; i++)
+		printf("%d\t: %s", i, get_next_line(fd));
+	return (0);
+}
