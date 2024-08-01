@@ -80,7 +80,7 @@ int main(int argc, char **argv, char **env)
 		i = 0;
 		while (argv[i] && strcmp(argv[i], "|") != 0 && strcmp(argv[i], ";") != 0)
 			i++;
-		if (!strcmp(*argv, "cd"))
+		if (strcmp(*argv, "cd") == 0)
 			ft_cd(argv);
 		else
 			pipe_exec(argv, i, env);
