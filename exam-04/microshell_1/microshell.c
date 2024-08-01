@@ -13,10 +13,10 @@ static int ft_putstr(char *str)
 
 static int  pipe_exec(char **argv, int i, char **env)
 {
-	int status;
-	int fd[2];
-	int pid;
 	int next = 0;
+	int fd[2];
+	int status;
+	int pid;
 	
 	if (argv[i] && strcmp(argv[i], "|") == 0)
 		next = 1;
