@@ -3,20 +3,13 @@
 # include <string>
 # include <cstdlib>
 # include <iostream>
-# include <map>
 # include <algorithm>
-
-class ASpell
-{
-
-};
 
 class Warlock
 {
 	private:
 	std::string	name;
 	std::string	title;
-	std::map<std::string, ASpell *>	spells;
 
 	Warlock() {return;}
 	Warlock(const Warlock &input) { (void) input; }
